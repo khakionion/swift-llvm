@@ -1,4 +1,4 @@
-;===- ./lib/Target/CIL/LLVMBuild.txt ---------------------------*- Conf -*--===;
+;===- ./lib/Target/CIL/MCTargetDesc/LLVMBuild.txt ------------*- Conf -*--===;
 ;
 ;                     The LLVM Compiler Infrastructure
 ;
@@ -13,35 +13,12 @@
 ;
 ;   http://llvm.org/docs/LLVMBuild.html
 ;
-;CILAsmPrinter
-;CILDesc
-;CILInfo
 ;===------------------------------------------------------------------------===;
 
-[common]
-;subdirectories = Disassembler InstPrinter MCTargetDesc TargetInfo
-subdirectories = MCTargetDesc
-
 [component_0]
-type = TargetGroup
-name = CIL
-parent = Target
-has_asmprinter = 1
-has_disassembler = 0
-
-[component_1]
 type = Library
-name = CILCodeGen
+name = CILDesc
 parent = CIL
-required_libraries =
- Analysis
- AsmPrinter
- CodeGen
- Core
- MC
- SelectionDAG
- Support
- Target
- TransformUtils
-
+required_libraries = MC Support
+;CILAsmPrinter CILInfo
 add_to_library_groups = CIL

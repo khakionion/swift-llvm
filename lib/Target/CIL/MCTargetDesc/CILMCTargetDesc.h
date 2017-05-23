@@ -1,4 +1,4 @@
-//===-- CILMCTargetDesc.h - CIL Target Descriptions ---------*- C++ -*-===//
+//===-- CILMCTargetDesc.h - CIL Target Descriptions -------------*- C++ -*-===//
 //
 //                     The LLVM Compiler Infrastructure
 //
@@ -33,6 +33,28 @@ class raw_ostream;
 
 Target &getTheCILTarget();
 
+MCCodeEmitter *createCILMCCodeEmitter(const MCInstrInfo &MCII,
+                                        const MCRegisterInfo &MRI,
+                                        MCContext &Ctx);
+MCAsmBackend *createCILAsmBackend(const Target &T, const MCRegisterInfo &MRI,
+                                    const Triple &TT, StringRef CPU,
+                                    const MCTargetOptions &Options);
+MCObjectWriter *createCILObjectWriter(raw_pwrite_stream &OS, bool Is64Bit,
+                                           bool IsLIttleEndian, uint8_t OSABI);
 } // End llvm namespace
+
+// Defines symbolic names for CIL registers.  This defines a mapping from
+// register name to register number.
+//
+#define GET_REGINFO_ENUM
+#include "CILGenRegisterInfo.inc"
+
+// Defines symbolic names for the CIL instructions.
+//
+#define GET_INSTRINFO_ENUM
+#include "CILGenInstrInfo.inc"
+
+#define GET_SUBTARGETINFO_ENUM
+#include "CILGenSubtargetInfo.inc"
 
 #endif
