@@ -799,7 +799,7 @@ void MCObjectFileInfo::initCOFFMCObjectFileInfo(const Triple &T) {
 
 void MCObjectFileInfo::InitMCObjectFileInfo(const Triple &TheTriple, bool PIC,
                                             CodeModel::Model cm,
-                                            MCContext &ctx) {
+                                                MCContext &ctx) {
   PositionIndependent = PIC;
   CMModel = cm;
   Ctx = &ctx;
@@ -841,6 +841,10 @@ void MCObjectFileInfo::InitMCObjectFileInfo(const Triple &TheTriple, bool PIC,
     Env = IsELF;
     initELFMCObjectFileInfo(TT);
     break;
+  case Triple::CIL:
+    Env = IsCIL;
+    initCILMCObjectFileInfo(TT);
+    break;
   case Triple::Wasm:
     report_fatal_error("Cannot initialize MC for wasm object file format yet.");
     break;
@@ -848,6 +852,10 @@ void MCObjectFileInfo::InitMCObjectFileInfo(const Triple &TheTriple, bool PIC,
     report_fatal_error("Cannot initialize MC for unknown object file format.");
     break;
   }
+}
+
+void MCObjectFileInfo::initCILMCObjectFileInfo(const Triple &T) {
+
 }
 
 MCSection *MCObjectFileInfo::getDwarfTypesSection(uint64_t Hash) const {

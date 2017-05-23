@@ -7,10 +7,8 @@
 //
 //===----------------------------------------------------------------------===//
 //
-
 #include "CILTargetMachine.h"
-//#include "CILTargetObjectFile.h"
-//#include "CIL.h"
+#include "CIL.h"
 #include "llvm/CodeGen/Passes.h"
 #include "llvm/CodeGen/TargetPassConfig.h"
 #include "llvm/IR/LegacyPassManager.h"
@@ -49,7 +47,6 @@ CILTargetMachine::CILTargetMachine(const Target &T, const Triple &TT,
                                        CodeGenOpt::Level OL, bool is64bit)
     : LLVMTargetMachine(T, computeDataLayout(TT, true), TT, CPU, FS, Options,
                         getEffectiveRelocModel(RM), CM, OL),
-      TLOF(make_unique<CILTargetObjectFile>()),
       Subtarget(TT, CPU, FS, *this, is64bit), is64Bit(is64bit) {
   initAsmInfo();
 }

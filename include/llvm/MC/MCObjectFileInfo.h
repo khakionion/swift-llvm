@@ -338,7 +338,7 @@ public:
     return EHFrameSection;
   }
 
-  enum Environment { IsMachO, IsELF, IsCOFF };
+  enum Environment { IsMachO, IsELF, IsCOFF, IsCIL };
   Environment getObjectFileType() const { return Env; }
 
   bool isPositionIndependent() const { return PositionIndependent; }
