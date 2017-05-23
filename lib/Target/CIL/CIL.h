@@ -26,6 +26,22 @@ namespace llvm {
   //class AsmPrinter;
   //class MCInst;
   //class MachineInstr;
+  // Enums corresponding to Sparc condition codes, both icc's and fcc's.  These
+  // values must be kept in sync with the ones in the .td file.
+  namespace CILCC {
+    enum CondCodes {
+      ICC_A   =  8   ,  // Always
+      ICC_N   =  0   ,  // Never
+    };
+  }
+
+  inline static const char *CILCondCodeToString(CILCC::CondCodes CC) {
+    switch (CC) {
+    case CILCC::ICC_A:   return "a";
+    case CILCC::ICC_N:   return "n";
+    }
+    llvm_unreachable("Invalid cond code");
+  }
 
 } // end namespace llvm;
 
