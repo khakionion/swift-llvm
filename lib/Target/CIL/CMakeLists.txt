@@ -1,7 +1,9 @@
 set(LLVM_TARGET_DEFINITIONS CIL.td)
 
+tablegen(LLVM CILGenAsmMatcher.inc -gen-asm-matcher)
 tablegen(LLVM CILGenAsmWriter.inc -gen-asm-writer)
 tablegen(LLVM CILGenCallingConv.inc -gen-callingconv)
+add_public_tablegen_target(CILCommonTableGen)
 
 add_llvm_target(CILCodeGen
   CILTargetMachine.cpp
