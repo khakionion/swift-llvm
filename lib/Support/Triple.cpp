@@ -69,6 +69,7 @@ StringRef Triple::getArchTypeName(ArchType Kind) {
   case wasm64:         return "wasm64";
   case renderscript32: return "renderscript32";
   case renderscript64: return "renderscript64";
+  case cil:            return "cil";
   }
 
   llvm_unreachable("Invalid ArchType!");
@@ -161,6 +162,7 @@ StringRef Triple::getVendorTypeName(VendorType Kind) {
   case Myriad: return "myriad";
   case AMD: return "amd";
   case Mesa: return "mesa";
+  case Microsoft: return "microsoft";
   }
 
   llvm_unreachable("Invalid VendorType!");
@@ -583,6 +585,7 @@ static StringRef getObjectFormatTypeName(Triple::ObjectFormatType Kind) {
   case Triple::ELF: return "elf";
   case Triple::MachO: return "macho";
   case Triple::Wasm: return "wasm";
+  case Triple::CIL: return "cil";
   }
   llvm_unreachable("unknown object format type");
 }
@@ -649,6 +652,9 @@ static Triple::ObjectFormatType getDefaultFormat(const Triple &T) {
     if (T.isOSDarwin())
       return Triple::MachO;
     return Triple::ELF;
+
+  case Triple::cil:
+    return Triple::CIL;
   }
   llvm_unreachable("unknown architecture");
 }
@@ -1198,6 +1204,7 @@ static unsigned getArchPointerBitWidth(llvm::Triple::ArchType Arch) {
   case llvm::Triple::spir64:
   case llvm::Triple::wasm64:
   case llvm::Triple::renderscript64:
+  case llvm::Triple::cil:
     return 64;
   }
   llvm_unreachable("Invalid architecture value");
@@ -1273,6 +1280,7 @@ Triple Triple::get32BitArchVariant() const {
   case Triple::spir64:         T.setArch(Triple::spir);    break;
   case Triple::wasm64:         T.setArch(Triple::wasm32);  break;
   case Triple::renderscript64: T.setArch(Triple::renderscript32); break;
+  case Triple::cil:            T.setArch(Triple::cil);     break;
   }
   return T;
 }
@@ -1335,6 +1343,7 @@ Triple Triple::get64BitArchVariant() const {
   case Triple::thumbeb:         T.setArch(Triple::aarch64_be); break;
   case Triple::wasm32:          T.setArch(Triple::wasm64);     break;
   case Triple::renderscript32:  T.setArch(Triple::renderscript64);     break;
+  case Triple::cil:             T.setArch(Triple::cil);        break;
   }
   return T;
 }
