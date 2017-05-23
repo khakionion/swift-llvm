@@ -24,6 +24,7 @@ subdirectories =
  AArch64
  AVR
  BPF
+ CIL
  Lanai
  Hexagon
  MSP430

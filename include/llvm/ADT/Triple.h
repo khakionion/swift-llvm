@@ -94,7 +94,8 @@ public:
     wasm64,         // WebAssembly with 64-bit pointers
     renderscript32, // 32-bit RenderScript
     renderscript64, // 64-bit RenderScript
-    LastArchType = renderscript64
+    cil,            // Microsoft Common Intermediate Language
+    LastArchType = cil
   };
   enum SubArchType {
     NoSubArch,
@@ -139,7 +140,8 @@ public:
     Myriad,
     AMD,
     Mesa,
-    LastVendorType = Mesa
+    Microsoft,
+    LastVendorType = Microsoft
   };
   enum OSType {
     UnknownOS,
@@ -207,6 +209,7 @@ public:
     ELF,
     MachO,
     Wasm,
+    CIL,
   };
 
 private:
@@ -608,6 +611,11 @@ public:
   /// Tests whether the target is NVPTX (32- or 64-bit).
   bool isNVPTX() const {
     return getArch() == Triple::nvptx || getArch() == Triple::nvptx64;
+  }
+
+  /// Tests whether the target is CIL
+  bool isCIL() const {
+    return getArch() == Triple::cil;
   }
 
   /// Tests wether the target supports comdat
