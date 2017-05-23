@@ -282,6 +282,8 @@ public:
 
   bool isMachO() const { return Kind == SymbolKindMachO; }
 
+  bool isCIL() const { return Kind == SymbolKindCIL; }
+
   /// @}
   /// \name Variable Symbols
   /// @{
