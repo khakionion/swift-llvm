@@ -7,7 +7,7 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This file describes the CIL instructions in TableGen format.
+// This file describes the CIL instructions in TableGen format, copied from RISC-V.
 //
 //===----------------------------------------------------------------------===//
 
@@ -15,7 +15,7 @@ include "CILInstrFormats.td"
 
 def simm12 : Operand<i32>;
 
-// As noted in RISCVRegisterInfo.td, the hope is that support for
+// As noted in CILRegisterInfo.td, the hope is that support for
 // variable-sized register classes will mean that instruction definitions do
 // not need to be duplicated for 32-bit and 64-bit register classes. For now
 // we use 'GPR', which is 32-bit. When codegen for both RV32 and RV64 is
@@ -23,9 +23,9 @@ def simm12 : Operand<i32>;
 // like <http://lists.llvm.org/pipermail/llvm-dev/2016-September/105027.html>
 // is adopted.
 
-class ALU_ri<bits<3> funct3, string OpcodeStr> //:
-//      FI<funct3, 0b0010011, (outs GPR:$rd), (ins GPR:$rs1, simm12:$imm12),
-//         OpcodeStr#"\t$rd, $rs1, $imm12", []>
+class ALU_ri<bits<3> funct3, string OpcodeStr> :
+      FI<funct3, 0b0010011, (outs GPR:$rd), (ins GPR:$rs1, simm12:$imm12),
+         OpcodeStr#"\t$rd, $rs1, $imm12", []>
 {
 }
 
@@ -36,9 +36,9 @@ def XORI  : ALU_ri<0b100, "xori">;
 def ORI   : ALU_ri<0b110, "ori">;
 def ANDI  : ALU_ri<0b111, "andi">;
 
-class ALU_rr<bits<7> funct7, bits<3> funct3, string OpcodeStr> //:
-//      FR<funct7, funct3, 0b0110011, (outs GPR:$rd), (ins GPR:$rs1, GPR:$rs2),
-//         OpcodeStr#"\t$rd, $rs1, $rs2", []>
+class ALU_rr<bits<7> funct7, bits<3> funct3, string OpcodeStr> :
+      FR<funct7, funct3, 0b0110011, (outs GPR:$rd), (ins GPR:$rs1, GPR:$rs2),
+         OpcodeStr#"\t$rd, $rs1, $rs2", []>
 {
 }
 

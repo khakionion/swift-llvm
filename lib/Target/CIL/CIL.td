@@ -2,10 +2,10 @@ include "llvm/Target/Target.td"
 
 include "CILRegisterInfo.td"
 
+include "CILCallingConv.td"
+
 include "CILInstrInfo.td"
 def CILInstrInfo : InstrInfo;
-
-include "CILCallingConv.td"
 
 include "CILAsmWriter.td"
 

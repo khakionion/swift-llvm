@@ -1,18 +1,17 @@
 set(LLVM_TARGET_DEFINITIONS CIL.td)
 
-tablegen(LLVM CILGenAsmWriter.inc -gen-asm-writer)
-tablegen(LLVM CILGenMCCodeEmitter.inc -gen-emitter)
 tablegen(LLVM CILGenRegisterInfo.inc -gen-register-info)
 tablegen(LLVM CILGenCallingConv.inc -gen-callingconv)
 tablegen(LLVM CILGenInstrInfo.inc -gen-instr-info)
+tablegen(LLVM CILGenMCCodeEmitter.inc -gen-emitter)
+tablegen(LLVM CILGenAsmWriter.inc -gen-asm-writer)
 add_public_tablegen_target(CILCommonTableGen)
 
 add_llvm_target(CILCodeGen
   CILTargetMachine.cpp
   CILTargetLowering.cpp
   CILTargetObjectFile.cpp
-  CILInstrInfo.cpp
-  )
+)
 
 #tablegen(LLVM CILGenAsmMatcher.inc -gen-asm-matcher)
 #tablegen(LLVM CILGenDAGISel.inc -gen-dag-isel)

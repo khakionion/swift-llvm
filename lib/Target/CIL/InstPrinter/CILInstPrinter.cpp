@@ -1,4 +1,4 @@
-//===-- CILInstPrinter.cpp - Convert CIL MCInst to assembly syntax ---------==//
+//==-- CILInstPrinter.cpp - Convert CIL MCInst to assembly syntax ----------==//
 //
 //                     The LLVM Compiler Infrastructure
 //
@@ -7,18 +7,19 @@
 //
 //===----------------------------------------------------------------------===//
 //
-// This class prints an CIL MCInst to a .cil file.
+// This class prints an CIL MCInst to a .s file.
 //
 //===----------------------------------------------------------------------===//
 
 #include "CILInstPrinter.h"
-#include "CIL.h"
-#include "MCTargetDesc/CILMCExpr.h"
+#include "llvm/ADT/STLExtras.h"
+#include "llvm/ADT/StringExtras.h"
+#include "llvm/MC/MCAsmInfo.h"
 #include "llvm/MC/MCExpr.h"
 #include "llvm/MC/MCInst.h"
 #include "llvm/MC/MCRegisterInfo.h"
 #include "llvm/MC/MCSubtargetInfo.h"
-#include "llvm/MC/MCSymbol.h"
+#include "llvm/Support/Format.h"
 #include "llvm/Support/raw_ostream.h"
 using namespace llvm;
 
@@ -28,143 +29,222 @@ using namespace llvm;
 #define PRINT_ALIAS_INSTR
 #include "CILGenAsmWriter.inc"
 
-void CILInstPrinter::printRegName(raw_ostream &OS, unsigned RegNo) const
-{
-  OS << '%' << StringRef(getRegisterName(RegNo)).lower();
+
+CILInstPrinter::CILInstPrinter(const MCAsmInfo &MAI,
+                                       const MCInstrInfo &MII,
+                                       const MCRegisterInfo &MRI)
+    : MCInstPrinter(MAI, MII, MRI) {}
+
+void CILInstPrinter::printRegName(raw_ostream &OS, unsigned RegNo) const {
+  // This is for .cfi directives.
+  OS << getRegisterName(RegNo);
 }
 
 void CILInstPrinter::printInst(const MCInst *MI, raw_ostream &O,
-                                 StringRef Annot, const MCSubtargetInfo &STI) {
-  if (!printAliasInstr(MI, STI, O) && !printCILAliasInstr(MI, STI, O))
-    printInstruction(MI, STI, O);
-  printAnnotation(O, Annot);
+                                   StringRef Annot,
+                                   const MCSubtargetInfo &STI) {
+
 }
 
-bool CILInstPrinter::printCILAliasInstr(const MCInst *MI,
-                                            const MCSubtargetInfo &STI,
-                                            raw_ostream &O) {
-  switch (MI->getOpcode()) {
-  default: return false;
-  /*
-  case SP::JMPLrr:
-  case SP::JMPLri: {
-    if (MI->getNumOperands() != 3)
-      return false;
-    if (!MI->getOperand(0).isReg())
-      return false;
-    switch (MI->getOperand(0).getReg()) {
-    default: return false;
-    case SP::G0: // jmp $addr | ret | retl
-      if (MI->getOperand(2).isImm() &&
-          MI->getOperand(2).getImm() == 8) {
-        switch(MI->getOperand(1).getReg()) {
-        default: break;
-        case SP::I7: O << "\tret"; return true;
-        case SP::O7: O << "\tretl"; return true;
-        }
-      }
-      O << "\tjmp "; printMemOperand(MI, 1, STI, O);
-      return true;
-    case SP::O7: // call $addr
-      O << "\tcall "; printMemOperand(MI, 1, STI, O);
-      return true;
-    }
-  }
-  case SP::V9FCMPS:  case SP::V9FCMPD:  case SP::V9FCMPQ:
-  case SP::V9FCMPES: case SP::V9FCMPED: case SP::V9FCMPEQ: {
-    if (isV9(STI)
-        || (MI->getNumOperands() != 3)
-        || (!MI->getOperand(0).isReg())
-        || (MI->getOperand(0).getReg() != SP::FCC0))
-      return false;
-    // if V8, skip printing %fcc0.
-    switch(MI->getOpcode()) {
-    default:
-    case SP::V9FCMPS:  O << "\tfcmps "; break;
-    case SP::V9FCMPD:  O << "\tfcmpd "; break;
-    case SP::V9FCMPQ:  O << "\tfcmpq "; break;
-    case SP::V9FCMPES: O << "\tfcmpes "; break;
-    case SP::V9FCMPED: O << "\tfcmped "; break;
-    case SP::V9FCMPEQ: O << "\tfcmpeq "; break;
-    }
-    printOperand(MI, 1, STI, O);
-    O << ", ";
-    printOperand(MI, 2, STI, O);
-    return true;
-  }*/
-  }
-}
-
-void CILInstPrinter::printOperand(const MCInst *MI, int opNum,
-                                    const MCSubtargetInfo &STI,
-                                    raw_ostream &O) {
-  const MCOperand &MO = MI->getOperand (opNum);
-
-  if (MO.isReg()) {
-    printRegName(O, MO.getReg());
-    return ;
-  }
-
-  if (MO.isImm()) {
-    switch (MI->getOpcode()) {
-      default:
-        O << (int)MO.getImm(); 
-       return;
-       /* 
-      case SP::TICCri: // Fall through
-      case SP::TICCrr: // Fall through
-      case SP::TRAPri: // Fall through
-      case SP::TRAPrr: // Fall through
-      case SP::TXCCri: // Fall through
-      case SP::TXCCrr: // Fall through
-        // Only seven-bit values up to 127.
-        O << ((int) MO.getImm() & 0x7f);  
-        return;a*/
-    }
-  }
-
-  assert(MO.isExpr() && "Unknown operand kind in printOperand");
-  MO.getExpr()->print(O, &MAI);
-}
-
-void CILInstPrinter::printMemOperand(const MCInst *MI, int opNum,
+void CILInstPrinter::printCustomAliasOperand(const MCInst *MI, unsigned OpIdx,
+                                       unsigned PrintMethodIdx,
                                        const MCSubtargetInfo &STI,
-                                       raw_ostream &O, const char *Modifier) {
-  printOperand(MI, opNum, STI, O);
+                                       raw_ostream &O)
+{
 
-  // If this is an ADD operand, emit it like normal operands.
-  if (Modifier && !strcmp(Modifier, "arith")) {
-    O << ", ";
-    printOperand(MI, opNum+1, STI, O);
-    return;
-  }
-  const MCOperand &MO = MI->getOperand(opNum+1);
-
-  // if (MO.isReg() && MO.getReg() == SP::G0)
-  //   return;   // don't print "+%g0"
-  if (MO.isImm() && MO.getImm() == 0)
-    return;   // don't print "+0"
-
-  O << "+";
-
-  printOperand(MI, opNum+1, STI, O);
 }
 
-void CILInstPrinter::printCCOperand(const MCInst *MI, int opNum,
+static bool isTblTbxInstruction(unsigned Opcode, StringRef &Layout,
+                                bool &IsTbx) {
+  return false;
+}
+
+bool CILInstPrinter::printSysAlias(const MCInst *MI,
+                                       const MCSubtargetInfo &STI,
+                                       raw_ostream &O) {
+
+  return false;
+}
+
+void CILInstPrinter::printOperand(const MCInst *MI, unsigned OpNo,
                                       const MCSubtargetInfo &STI,
                                       raw_ostream &O) {
-  /*
-  int CC = (int)MI->getOperand(opNum).getImm();
-  switch (MI->getOpcode()) {
-  default: break;
-  }
-  O << CILCondCodeToString((SPCC::CondCodes)CC);
-  */
 }
 
-bool CILInstPrinter::printGetPCX(const MCInst *MI, unsigned opNum,
-                                   const MCSubtargetInfo &STI,
-                                   raw_ostream &O) {
-  llvm_unreachable("FIXME: Implement CILInstPrinter::printGetPCX.");
-  return true;
+void CILInstPrinter::printImm(const MCInst *MI, unsigned OpNo,
+                                     const MCSubtargetInfo &STI,
+                                     raw_ostream &O) {
+}
+
+void CILInstPrinter::printImmHex(const MCInst *MI, unsigned OpNo,
+                                     const MCSubtargetInfo &STI,
+                                     raw_ostream &O) {
+}
+
+void CILInstPrinter::printPostIncOperand(const MCInst *MI, unsigned OpNo,
+                                             unsigned Imm, raw_ostream &O) {
+}
+
+void CILInstPrinter::printVRegOperand(const MCInst *MI, unsigned OpNo,
+                                          const MCSubtargetInfo &STI,
+                                          raw_ostream &O) {
+}
+
+void CILInstPrinter::printSysCROperand(const MCInst *MI, unsigned OpNo,
+                                           const MCSubtargetInfo &STI,
+                                           raw_ostream &O) {
+}
+
+void CILInstPrinter::printAddSubImm(const MCInst *MI, unsigned OpNum,
+                                        const MCSubtargetInfo &STI,
+                                        raw_ostream &O) {
+}
+
+void CILInstPrinter::printLogicalImm32(const MCInst *MI, unsigned OpNum,
+                                           const MCSubtargetInfo &STI,
+                                           raw_ostream &O) {
+}
+
+void CILInstPrinter::printLogicalImm64(const MCInst *MI, unsigned OpNum,
+                                           const MCSubtargetInfo &STI,
+                                           raw_ostream &O) {
+}
+
+void CILInstPrinter::printShifter(const MCInst *MI, unsigned OpNum,
+                                      const MCSubtargetInfo &STI,
+                                      raw_ostream &O) {
+}
+
+void CILInstPrinter::printShiftedRegister(const MCInst *MI, unsigned OpNum,
+                                              const MCSubtargetInfo &STI,
+                                              raw_ostream &O) {
+}
+
+void CILInstPrinter::printExtendedRegister(const MCInst *MI, unsigned OpNum,
+                                               const MCSubtargetInfo &STI,
+                                               raw_ostream &O) {
+}
+
+void CILInstPrinter::printArithExtend(const MCInst *MI, unsigned OpNum,
+                                          const MCSubtargetInfo &STI,
+                                          raw_ostream &O) {
+}
+
+void CILInstPrinter::printMemExtend(const MCInst *MI, unsigned OpNum,
+                                        raw_ostream &O, char SrcRegKind,
+                                        unsigned Width) {
+}
+
+void CILInstPrinter::printCondCode(const MCInst *MI, unsigned OpNum,
+                                       const MCSubtargetInfo &STI,
+                                       raw_ostream &O) {
+}
+
+void CILInstPrinter::printInverseCondCode(const MCInst *MI, unsigned OpNum,
+                                              const MCSubtargetInfo &STI,
+                                              raw_ostream &O) {
+}
+
+void CILInstPrinter::printAMNoIndex(const MCInst *MI, unsigned OpNum,
+                                        const MCSubtargetInfo &STI,
+                                        raw_ostream &O) {
+}
+
+template<int Scale>
+void CILInstPrinter::printImmScale(const MCInst *MI, unsigned OpNum,
+                                       const MCSubtargetInfo &STI,
+                                       raw_ostream &O) {
+}
+
+void CILInstPrinter::printUImm12Offset(const MCInst *MI, unsigned OpNum,
+                                           unsigned Scale, raw_ostream &O) {
+}
+
+void CILInstPrinter::printAMIndexedWB(const MCInst *MI, unsigned OpNum,
+                                          unsigned Scale, raw_ostream &O) {
+}
+
+void CILInstPrinter::printPrefetchOp(const MCInst *MI, unsigned OpNum,
+                                         const MCSubtargetInfo &STI,
+                                         raw_ostream &O) {
+}
+
+void CILInstPrinter::printPSBHintOp(const MCInst *MI, unsigned OpNum,
+                                        const MCSubtargetInfo &STI,
+                                        raw_ostream &O) {
+}
+
+void CILInstPrinter::printFPImmOperand(const MCInst *MI, unsigned OpNum,
+                                           const MCSubtargetInfo &STI,
+                                           raw_ostream &O) {
+}
+
+static unsigned getNextVectorRegister(unsigned Reg, unsigned Stride = 1) {
+  return 0;
+}
+
+template<unsigned size>
+void CILInstPrinter::printGPRSeqPairsClassOperand(const MCInst *MI,
+                                                   unsigned OpNum,
+                                                   const MCSubtargetInfo &STI,
+                                                   raw_ostream &O) {
+}
+
+void CILInstPrinter::printVectorList(const MCInst *MI, unsigned OpNum,
+                                         const MCSubtargetInfo &STI,
+                                         raw_ostream &O,
+                                         StringRef LayoutSuffix) {
+}
+
+void
+CILInstPrinter::printImplicitlyTypedVectorList(const MCInst *MI,
+                                                   unsigned OpNum,
+                                                   const MCSubtargetInfo &STI,
+                                                   raw_ostream &O) {
+}
+
+template <unsigned NumLanes, char LaneKind>
+void CILInstPrinter::printTypedVectorList(const MCInst *MI, unsigned OpNum,
+                                              const MCSubtargetInfo &STI,
+                                              raw_ostream &O) {
+}
+
+void CILInstPrinter::printVectorIndex(const MCInst *MI, unsigned OpNum,
+                                          const MCSubtargetInfo &STI,
+                                          raw_ostream &O) {
+}
+
+void CILInstPrinter::printAlignedLabel(const MCInst *MI, unsigned OpNum,
+                                           const MCSubtargetInfo &STI,
+                                           raw_ostream &O) {
+}
+
+void CILInstPrinter::printAdrpLabel(const MCInst *MI, unsigned OpNum,
+                                        const MCSubtargetInfo &STI,
+                                        raw_ostream &O) {
+}
+
+void CILInstPrinter::printBarrierOption(const MCInst *MI, unsigned OpNo,
+                                            const MCSubtargetInfo &STI,
+                                            raw_ostream &O) {
+}
+
+void CILInstPrinter::printMRSSystemRegister(const MCInst *MI, unsigned OpNo,
+                                                const MCSubtargetInfo &STI,
+                                                raw_ostream &O) {
+}
+
+void CILInstPrinter::printMSRSystemRegister(const MCInst *MI, unsigned OpNo,
+                                                const MCSubtargetInfo &STI,
+                                                raw_ostream &O) {
+}
+
+void CILInstPrinter::printSystemPStateField(const MCInst *MI, unsigned OpNo,
+                                                const MCSubtargetInfo &STI,
+                                                raw_ostream &O) {
+}
+
+void CILInstPrinter::printSIMDType10Operand(const MCInst *MI, unsigned OpNo,
+                                                const MCSubtargetInfo &STI,
+                                                raw_ostream &O) {
 }

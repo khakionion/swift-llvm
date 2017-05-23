@@ -9,6 +9,9 @@
 
 //===----------------------------------------------------------------------===//
 //
+//  These instruction format definitions are copied from the RISC-V
+//  implementation. CIL doesn't use registers, so we probably don't 
+//  actually need these. 
 //
 //===----------------------------------------------------------------------===//
 

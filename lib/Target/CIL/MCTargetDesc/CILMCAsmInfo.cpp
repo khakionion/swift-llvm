@@ -24,29 +24,17 @@ CILMCAsmInfo::CILMCAsmInfo(const Triple &TheTriple) {
   UseIntegratedAssembler = false;
 }
 
-/*
+
 const MCExpr*
 CILMCAsmInfo::getExprForPersonalitySymbol(const MCSymbol *Sym,
                                                unsigned Encoding,
                                                MCStreamer &Streamer) const {
-  if (Encoding & dwarf::DW_EH_PE_pcrel) {
-    MCContext &Ctx = Streamer.getContext();
-    return CILMCExpr::create(CILMCExpr::VK_CIL_R_DISP32,
-                               MCSymbolRefExpr::create(Sym, Ctx), Ctx);
-  }
-
-  return MCAsmInfo::getExprForPersonalitySymbol(Sym, Encoding, Streamer);
+  return 0;
 }
 
 const MCExpr*
 CILMCAsmInfo::getExprForFDESymbol(const MCSymbol *Sym,
                                        unsigned Encoding,
                                        MCStreamer &Streamer) const {
-  if (Encoding & dwarf::DW_EH_PE_pcrel) {
-    MCContext &Ctx = Streamer.getContext();
-    return CILMCExpr::create(CILMCExpr::VK_CIL_R_DISP32,
-                               MCSymbolRefExpr::create(Sym, Ctx), Ctx);
-  }
-  return MCAsmInfo::getExprForFDESymbol(Sym, Encoding, Streamer);
+  return 0;
 }
-*/
