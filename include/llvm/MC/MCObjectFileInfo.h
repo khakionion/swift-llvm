@@ -353,6 +353,7 @@ private:
   void initMachOMCObjectFileInfo(const Triple &T);
   void initELFMCObjectFileInfo(const Triple &T);
   void initCOFFMCObjectFileInfo(const Triple &T);
+  void initCILMCObjectFileInfo(const Triple &T);
 
 public:
   const Triple &getTargetTriple() const { return TT; }

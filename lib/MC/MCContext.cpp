@@ -24,6 +24,7 @@
 #include "llvm/MC/MCSymbolCOFF.h"
 #include "llvm/MC/MCSymbolELF.h"
 #include "llvm/MC/MCSymbolMachO.h"
+#include "llvm/MC/MCSymbolCIL.h"
 #include "llvm/Support/COFF.h"
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/ELF.h"
@@ -149,6 +150,8 @@ MCSymbol *MCContext::createSymbolImpl(const StringMapEntry<bool> *Name,
       return new (Name, *this) MCSymbolELF(Name, IsTemporary);
     case MCObjectFileInfo::IsMachO:
       return new (Name, *this) MCSymbolMachO(Name, IsTemporary);
+    case MCObjectFileInfo::IsCIL:
+      return new (Name, *this) MCSymbolCIL(Name, IsTemporary);
     }
   }
   return new (Name, *this) MCSymbol(MCSymbol::SymbolKindUnset, Name,
