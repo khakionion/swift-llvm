@@ -1,7 +1,6 @@
 include "llvm/Target/Target.td"
 
 include "CILCallingConv.td"
-include "CILGenMCCodeEmitter.td"
 
 def CILAsmParser : AsmParser {
   bit ShouldEmitMatchRegisterName = 0;
