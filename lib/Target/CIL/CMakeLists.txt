@@ -1,4 +1,4 @@
-set(LLVM_TARGET_DEFINITIONS Sparc.td)
+set(LLVM_TARGET_DEFINITIONS CIL.td)
 
 tablegen(LLVM CILGenAsmWriter.inc -gen-asm-writer)
 tablegen(LLVM CILGenCallingConv.inc -gen-callingconv)

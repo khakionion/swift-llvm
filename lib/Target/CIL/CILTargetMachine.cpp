@@ -46,8 +46,7 @@ CILTargetMachine::CILTargetMachine(const Target &T, const Triple &TT,
                                        CodeModel::Model CM,
                                        CodeGenOpt::Level OL)
     : LLVMTargetMachine(T, computeDataLayout(TT, true), TT, CPU, FS, Options,
-                        getEffectiveRelocModel(RM), CM, OL),
-      TLOF(make_unique<CILTargetObjectFile>()) {
+                        getEffectiveRelocModel(RM), CM, OL) {
   initAsmInfo();
 }
 

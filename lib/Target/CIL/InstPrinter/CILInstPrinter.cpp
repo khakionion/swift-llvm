@@ -26,7 +26,7 @@ using namespace llvm;
 
 #define GET_INSTRUCTION_NAME
 #define PRINT_ALIAS_INSTR
-// #include "CILGenAsmWriter.inc"
+#include "CILGenAsmWriter.inc"
 
 void CILInstPrinter::printRegName(raw_ostream &OS, unsigned RegNo) const
 {
