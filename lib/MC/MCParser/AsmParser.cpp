@@ -566,6 +566,7 @@ namespace llvm {
 extern MCAsmParserExtension *createDarwinAsmParser();
 extern MCAsmParserExtension *createELFAsmParser();
 extern MCAsmParserExtension *createCOFFAsmParser();
+extern MCAsmParserExtension *createCILAsmParser();
 
 } // end namespace llvm
 
@@ -596,6 +597,9 @@ AsmParser::AsmParser(SourceMgr &SM, MCContext &Ctx, MCStreamer &Out,
     break;
   case MCObjectFileInfo::IsELF:
     PlatformParser.reset(createELFAsmParser());
+    break;
+  case MCObjectFileInfo::IsCIL:
+    PlatformParser.reset(createCILAsmParser());
     break;
   }
 
