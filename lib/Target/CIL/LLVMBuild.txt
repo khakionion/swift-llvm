@@ -12,14 +12,10 @@
 ; For more information on the LLVMBuild system, please see:
 ;
 ;   http://llvm.org/docs/LLVMBuild.html
-;
-;CILAsmPrinter
-;CILDesc
-;CILInfo
+;subdirectories = Disassembler InstPrinter MCTargetDesc TargetInfo
 ;===------------------------------------------------------------------------===;
 
 [common]
-;subdirectories = Disassembler InstPrinter MCTargetDesc TargetInfo
 subdirectories = InstPrinter MCTargetDesc TargetInfo
 
 [component_0]
@@ -43,5 +39,7 @@ required_libraries =
  Support
  Target
  TransformUtils
+ CILDesc
+ CILInfo
 
 add_to_library_groups = CIL
