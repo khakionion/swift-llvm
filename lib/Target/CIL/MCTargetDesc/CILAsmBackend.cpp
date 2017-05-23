@@ -108,6 +108,14 @@ namespace {
 
       return true;
     }
+
+    void applyFixup(const MCFixup &Fixup, char *Data, unsigned DataSize,
+                    uint64_t Value, bool IsPCRel) const override {
+    }
+
+    MCObjectWriter *createObjectWriter(raw_pwrite_stream &OS) const override {
+    }
+
   };
 
   /*class ELFSparcAsmBackend : public SparcAsmBackend {
@@ -145,5 +153,5 @@ MCAsmBackend *llvm::createCILAsmBackend(const Target &T,
                                           const MCRegisterInfo &MRI,
                                           const Triple &TT, StringRef CPU,
                                           const MCTargetOptions &Options) {
-  return new CILAsmBackend(T, TT.getOS());
+  return new CILAsmBackend(T);
 }

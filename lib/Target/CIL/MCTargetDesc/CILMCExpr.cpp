@@ -122,8 +122,8 @@ CILMCExpr::VariantKind CILMCExpr::parseVariantKind(StringRef name)
 CIL::Fixups CILMCExpr::getFixupKind(CILMCExpr::VariantKind Kind) {
   switch (Kind) {
   default: llvm_unreachable("Unhandled CILMCExpr::VariantKind");
-  case VK_CIL_LO:       return CIL::fixup_CIL_lo10;
-  case VK_CIL_HI:       return CIL::fixup_CIL_hi22;
+  // case VK_CIL_LO:       return CIL::fixup_CIL_lo10;
+  // case VK_CIL_HI:       return CIL::fixup_CIL_hi22;
   /*case VK_Sparc_H44:      return Sparc::fixup_sparc_h44;
   case VK_Sparc_M44:      return Sparc::fixup_sparc_m44;
   case VK_Sparc_L44:      return Sparc::fixup_sparc_l44;
@@ -194,8 +194,8 @@ static void fixELFSymbolsInTLSFixupsImpl(const MCExpr *Expr, MCAssembler &Asm) {
 void CILMCExpr::fixELFSymbolsInTLSFixups(MCAssembler &Asm) const {
   switch(getKind()) {
   default: return;
-  case VK_Sparc_TLS_GD_HI22:
-  case VK_Sparc_TLS_GD_LO10:
+  // case VK_Sparc_TLS_GD_HI22:
+  // case VK_Sparc_TLS_GD_LO10:
   /*case VK_Sparc_TLS_GD_ADD:
   case VK_Sparc_TLS_GD_CALL:
   case VK_Sparc_TLS_LDM_HI22:

@@ -13,6 +13,7 @@
 
 #include "CILInstPrinter.h"
 #include "CIL.h"
+#include "MCTargetDesc/CILMCExpr.h"
 #include "llvm/MC/MCExpr.h"
 #include "llvm/MC/MCInst.h"
 #include "llvm/MC/MCRegisterInfo.h"
@@ -25,7 +26,7 @@ using namespace llvm;
 
 #define GET_INSTRUCTION_NAME
 #define PRINT_ALIAS_INSTR
-//#include "SparcGenAsmWriter.inc"
+// #include "CILGenAsmWriter.inc"
 
 void CILInstPrinter::printRegName(raw_ostream &OS, unsigned RegNo) const
 {
@@ -44,6 +45,7 @@ bool CILInstPrinter::printCILAliasInstr(const MCInst *MI,
                                             raw_ostream &O) {
   switch (MI->getOpcode()) {
   default: return false;
+  /*
   case SP::JMPLrr:
   case SP::JMPLri: {
     if (MI->getNumOperands() != 3)
@@ -89,7 +91,7 @@ bool CILInstPrinter::printCILAliasInstr(const MCInst *MI,
     O << ", ";
     printOperand(MI, 2, STI, O);
     return true;
-  }
+  }*/
   }
 }
 
@@ -107,8 +109,8 @@ void CILInstPrinter::printOperand(const MCInst *MI, int opNum,
     switch (MI->getOpcode()) {
       default:
         O << (int)MO.getImm(); 
-        return;
-        
+       return;
+       /* 
       case SP::TICCri: // Fall through
       case SP::TICCrr: // Fall through
       case SP::TRAPri: // Fall through
@@ -117,7 +119,7 @@ void CILInstPrinter::printOperand(const MCInst *MI, int opNum,
       case SP::TXCCrr: // Fall through
         // Only seven-bit values up to 127.
         O << ((int) MO.getImm() & 0x7f);  
-        return;
+        return;a*/
     }
   }
 
@@ -138,8 +140,8 @@ void CILInstPrinter::printMemOperand(const MCInst *MI, int opNum,
   }
   const MCOperand &MO = MI->getOperand(opNum+1);
 
-  if (MO.isReg() && MO.getReg() == SP::G0)
-    return;   // don't print "+%g0"
+  // if (MO.isReg() && MO.getReg() == SP::G0)
+  //   return;   // don't print "+%g0"
   if (MO.isImm() && MO.getImm() == 0)
     return;   // don't print "+0"
 
@@ -151,11 +153,13 @@ void CILInstPrinter::printMemOperand(const MCInst *MI, int opNum,
 void CILInstPrinter::printCCOperand(const MCInst *MI, int opNum,
                                       const MCSubtargetInfo &STI,
                                       raw_ostream &O) {
+  /*
   int CC = (int)MI->getOperand(opNum).getImm();
   switch (MI->getOpcode()) {
   default: break;
   }
   O << CILCondCodeToString((SPCC::CondCodes)CC);
+  */
 }
 
 bool CILInstPrinter::printGetPCX(const MCInst *MI, unsigned opNum,

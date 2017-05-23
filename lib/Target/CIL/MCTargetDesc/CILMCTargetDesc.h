@@ -47,14 +47,14 @@ MCObjectWriter *createCILObjectWriter(raw_pwrite_stream &OS, bool Is64Bit,
 // register name to register number.
 //
 #define GET_REGINFO_ENUM
-#include "CILGenRegisterInfo.inc"
+// #include "CILGenRegisterInfo.inc"
 
 // Defines symbolic names for the CIL instructions.
 //
 #define GET_INSTRINFO_ENUM
-#include "CILGenInstrInfo.inc"
+// #include "CILGenInstrInfo.inc"
 
 #define GET_SUBTARGETINFO_ENUM
-#include "CILGenSubtargetInfo.inc"
+// #include "CILGenSubtargetInfo.inc"
 
 #endif

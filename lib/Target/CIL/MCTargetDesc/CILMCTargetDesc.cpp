@@ -14,50 +14,54 @@
 #include "CILMCTargetDesc.h"
 #include "InstPrinter/CILInstPrinter.h"
 #include "CILMCAsmInfo.h"
-#include "CILTargetStreamer.h"
+// #include "CILTargetStreamer.h"
 #include "llvm/MC/MCInstrInfo.h"
 #include "llvm/MC/MCRegisterInfo.h"
-#include "llvm/MC/MCSubtargetInfo.h"
+// #include "llvm/MC/MCSubtargetInfo.h"
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/TargetRegistry.h"
 
 using namespace llvm;
 
 #define GET_INSTRINFO_MC_DESC
-#include "CILGenInstrInfo.inc"
+// #include "CILGenInstrInfo.inc"
 
 #define GET_SUBTARGETINFO_MC_DESC
-#include "CILGenSubtargetInfo.inc"
+// #include "CILGenSubtargetInfo.inc"
 
 #define GET_REGINFO_MC_DESC
-#include "CILGenRegisterInfo.inc"
+// #include "CILGenRegisterInfo.inc"
 
 static MCAsmInfo *createCILMCAsmInfo(const MCRegisterInfo &MRI,
                                        const Triple &TT) {
   MCAsmInfo *MAI = new CILMCAsmInfo(TT);
+  /*
   unsigned Reg = MRI.getDwarfRegNum(SP::O6, true);
   MCCFIInstruction Inst = MCCFIInstruction::createDefCfa(nullptr, Reg, 0);
   MAI->addInitialFrameState(Inst);
+  */
   return MAI;
 }
 
 static MCInstrInfo *createCILMCInstrInfo() {
   MCInstrInfo *X = new MCInstrInfo();
-  InitCILMCInstrInfo(X);
+  // InitCILMCInstrInfo(X);
   return X;
 }
 
 static MCRegisterInfo *createCILMCRegisterInfo(const Triple &TT) {
   MCRegisterInfo *X = new MCRegisterInfo();
-  InitCILMCRegisterInfo(X, SP::O7);
+  // InitCILMCRegisterInfo(X, SP::O7);
   return X;
 }
 
+/*
 static MCSubtargetInfo *
 createCILMCSubtargetInfo(const Triple &TT, StringRef CPU, StringRef FS) {
   CPU = "cil";
-  return createCILMCSubtargetInfoImpl(TT, CPU, FS);
+  // return createCILMCSubtargetInfoImpl(TT, CPU, FS);
 }
+*/
 
 // Code models. Some only make sense for 64-bit code.
 //
@@ -96,6 +100,7 @@ static void adjustCodeGenOptsV9(const Triple &TT, Reloc::Model RM,
   }
 }
 
+/*
 static MCTargetStreamer *
 createObjectTargetStreamer(MCStreamer &S, const MCSubtargetInfo &STI) {
   return new CILTargetStreamer(S);
@@ -107,6 +112,8 @@ static MCTargetStreamer *createTargetAsmStreamer(MCStreamer &S,
                                                  bool isVerboseAsm) {
   return new CILTargetAsmStreamer(S, OS);
 }
+
+*/
 
 static MCInstPrinter *createCILMCInstPrinter(const Triple &T,
                                                unsigned SyntaxVariant,
@@ -129,7 +136,7 @@ extern "C" void LLVMInitializeCILTargetMC() {
     TargetRegistry::RegisterMCRegInfo(*T, createCILMCRegisterInfo);
 
     // Register the MC subtarget info.
-    TargetRegistry::RegisterMCSubtargetInfo(*T, createCILMCSubtargetInfo);
+    // TargetRegistry::RegisterMCSubtargetInfo(*T, createCILMCSubtargetInfo);
 
     // Register the MC Code Emitter.
     TargetRegistry::RegisterMCCodeEmitter(*T, createCILMCCodeEmitter);
@@ -138,11 +145,11 @@ extern "C" void LLVMInitializeCILTargetMC() {
     TargetRegistry::RegisterMCAsmBackend(*T, createCILAsmBackend);
 
     // Register the object target streamer.
-    TargetRegistry::RegisterObjectTargetStreamer(*T,
-                                                 createObjectTargetStreamer);
+    // TargetRegistry::RegisterObjectTargetStreamer(*T,
+    //                                              createObjectTargetStreamer);
 
     // Register the asm streamer.
-    TargetRegistry::RegisterAsmTargetStreamer(*T, createTargetAsmStreamer);
+    // TargetRegistry::RegisterAsmTargetStreamer(*T, createTargetAsmStreamer);
 
     // Register the MCInstPrinter
     TargetRegistry::RegisterMCInstPrinter(*T, createCILMCInstPrinter);

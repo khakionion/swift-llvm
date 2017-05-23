@@ -87,6 +87,10 @@ MCCodeEmitter *llvm::createCILMCCodeEmitter(const MCInstrInfo &MCII,
   return new CILMCCodeEmitter(MCII, Ctx);
 }
 
+void CILMCCodeEmitter::verifyInstructionPredicates(const MCInst &MI,
+                                   uint64_t AvailableFeatures) const {
+}
+
 void CILMCCodeEmitter::encodeInstruction(const MCInst &MI, raw_ostream &OS,
                                            SmallVectorImpl<MCFixup> &Fixups,
                                            const MCSubtargetInfo &STI) const {
@@ -105,11 +109,12 @@ void CILMCCodeEmitter::encodeInstruction(const MCInst &MI, raw_ostream &OS,
   unsigned tlsOpNo = 0;
   switch (MI.getOpcode()) {
   default: break;
+  /*
   case SP::TLS_CALL:   tlsOpNo = 1; break;
   case SP::TLS_ADDrr:
   case SP::TLS_ADDXrr:
   case SP::TLS_LDrr:
-  case SP::TLS_LDXrr:  tlsOpNo = 3; break;
+  case SP::TLS_LDXrr:  tlsOpNo = 3; break;*/
   }
   if (tlsOpNo != 0) {
     const MCOperand &MO = MI.getOperand(tlsOpNo);
@@ -157,29 +162,31 @@ getCallTargetOpValue(const MCInst &MI, unsigned OpNo,
   if (MO.isReg() || MO.isImm())
     return getMachineOpValue(MI, MO, Fixups, STI);
 
-  if (MI.getOpcode() == SP::TLS_CALL) {
+  // if (MI.getOpcode() == SP::TLS_CALL) {
     // No fixups for __tls_get_addr. Will emit for fixups for tls_symbol in
     // encodeInstruction.
-#ifndef NDEBUG
+// #ifndef NDEBUG
     // Verify that the callee is actually __tls_get_addr.
-    const CILMCExpr *SExpr = dyn_cast<CILMCExpr>(MO.getExpr());
+    /*
+     const CILMCExpr *SExpr = dyn_cast<CILMCExpr>(MO.getExpr());
     assert(SExpr && SExpr->getSubExpr()->getKind() == MCExpr::SymbolRef &&
            "Unexpected expression in TLS_CALL");
     const MCSymbolRefExpr *SymExpr = cast<MCSymbolRefExpr>(SExpr->getSubExpr());
     assert(SymExpr->getSymbol().getName() == "__tls_get_addr" &&
            "Unexpected function for TLS_CALL");
-#endif
-    return 0;
-  }
+    */
+// #endif
+//     return 0;
+//   }
 
-  MCFixupKind fixupKind = 0;//(MCFixupKind)CIL::fixup_CIL_call30;
+  MCFixupKind fixupKind = (MCFixupKind)0;//(MCFixupKind)CIL::fixup_CIL_call30;
 /*
   if (const CILMCExpr *SExpr = dyn_cast<CILMCExpr>(MO.getExpr())) {
     if (SExpr->getKind() == CILMCExpr::VK_CIL_WPLT30)
       fixupKind = (MCFixupKind)CIL::fixup_CIL_wplt30;
   }*/
 
-  Fixups.push_back(MCFixup::create(0, MO.getExpr(), fixupKind));
+  // Fixups.push_back(MCFixup::create(0, MO.getExpr(), fixupKind));
 
   return 0;
 }
@@ -226,4 +233,4 @@ getBranchOnRegTargetOpValue(const MCInst &MI, unsigned OpNo,
 }
 
 #define ENABLE_INSTR_PREDICATE_VERIFIER
-#include "CILGenMCCodeEmitter.inc"
+// #include "CILGenMCCodeEmitter.inc"

@@ -26,7 +26,7 @@ public:
   CILTargetMachine(const Target &T, const Triple &TT, StringRef CPU,
                      StringRef FS, const TargetOptions &Options,
                      Optional<Reloc::Model> RM, CodeModel::Model CM,
-                     CodeGenOpt::Level OL, bool is64bit);
+                     CodeGenOpt::Level OL);
   ~CILTargetMachine() override;
 
   // Pass Pipeline Configuration

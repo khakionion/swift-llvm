@@ -9,8 +9,8 @@
 //
 
 #include "CILTargetMachine.h"
-//#include "CILTargetObjectFile.h"
-//#include "CIL.h"
+#include "CILTargetObjectFile.h"
+#include "CIL.h"
 #include "llvm/CodeGen/Passes.h"
 #include "llvm/CodeGen/TargetPassConfig.h"
 #include "llvm/IR/LegacyPassManager.h"
@@ -46,49 +46,14 @@ CILTargetMachine::CILTargetMachine(const Target &T, const Triple &TT,
                                        const TargetOptions &Options,
                                        Optional<Reloc::Model> RM,
                                        CodeModel::Model CM,
-                                       CodeGenOpt::Level OL, bool is64bit)
+                                       CodeGenOpt::Level OL)
     : LLVMTargetMachine(T, computeDataLayout(TT, true), TT, CPU, FS, Options,
                         getEffectiveRelocModel(RM), CM, OL),
-      TLOF(make_unique<CILTargetObjectFile>()),
-      Subtarget(TT, CPU, FS, *this, is64bit), is64Bit(is64bit) {
+      TLOF(make_unique<CILTargetObjectFile>()) {
   initAsmInfo();
 }
 
 CILTargetMachine::~CILTargetMachine() {}
-
-const CILSubtarget * 
-CILTargetMachine::getSubtargetImpl(const Function &F) const {
-  Attribute CPUAttr = F.getFnAttribute("target-cpu");
-  Attribute FSAttr = F.getFnAttribute("target-features");
-
-  std::string CPU = !CPUAttr.hasAttribute(Attribute::None)
-                        ? CPUAttr.getValueAsString().str()
-                        : TargetCPU;
-  std::string FS = !FSAttr.hasAttribute(Attribute::None)
-                       ? FSAttr.getValueAsString().str()
-                       : TargetFS;
-
-  // FIXME: This is related to the code below to reset the target options,
-  // we need to know whether or not the soft float flag is set on the
-  // function, so we can enable it as a subtarget feature.
-  bool softFloat =
-      F.hasFnAttribute("use-soft-float") &&
-      F.getFnAttribute("use-soft-float").getValueAsString() == "true";
-
-  if (softFloat)         
-    FS += FS.empty() ? "+soft-float" : ",+soft-float";
-
-  auto &I = SubtargetMap[CPU + FS];
-  if (!I) {
-    // This needs to be done before we create a new subtarget since any
-    // creation will depend on the TM and the code generation flags on the
-    // function that reside in TargetOptions.
-    resetTargetOptions(F);
-    I = llvm::make_unique<CILSubtarget>(TargetTriple, CPU, FS, *this,
-                                          this->is64Bit);
-  }
-  return I.get();
-}
 
 namespace {
 /// CIL Code Generator Pass Configuration Options.
@@ -118,11 +83,12 @@ void CILPassConfig::addIRPasses() {
 }
 
 bool CILPassConfig::addInstSelector() {
-  addPass(createCILISelDag(getCILTargetMachine()));
+  //addPass(createCILISelDag(getCILTargetMachine()));
   return false;
 }
 
 void CILPassConfig::addPreEmitPass(){
+  /*
   addPass(createCILDelaySlotFillerPass(getCILTargetMachine()));
 
   if (this->getCILTargetMachine().getSubtargetImpl()->insertNOPLoad())
@@ -144,5 +110,5 @@ void CILPassConfig::addPreEmitPass(){
   {
     addPass(new FixAllFDIVSQRT(getCILTargetMachine()));
   }
+  */
 }
-

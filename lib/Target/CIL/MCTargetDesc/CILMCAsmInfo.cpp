@@ -24,6 +24,7 @@ CILMCAsmInfo::CILMCAsmInfo(const Triple &TheTriple) {
   UseIntegratedAssembler = false;
 }
 
+/*
 const MCExpr*
 CILMCAsmInfo::getExprForPersonalitySymbol(const MCSymbol *Sym,
                                                unsigned Encoding,
@@ -48,3 +49,4 @@ CILMCAsmInfo::getExprForFDESymbol(const MCSymbol *Sym,
   }
   return MCAsmInfo::getExprForFDESymbol(Sym, Encoding, Streamer);
 }
+*/

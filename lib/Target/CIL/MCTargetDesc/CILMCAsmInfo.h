@@ -20,7 +20,7 @@ namespace llvm {
 class Triple;
 
 class CILMCAsmInfo : public MCAsmInfo {
-  void anchor() override;
+  void anchor();
 
 public:
   explicit CILMCAsmInfo(const Triple &TheTriple);
