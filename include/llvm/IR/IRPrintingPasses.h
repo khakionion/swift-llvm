@@ -38,6 +38,12 @@ ModulePass *createPrintModulePass(raw_ostream &OS,
                                   const std::string &Banner = "",
                                   bool ShouldPreserveUseListOrder = false);
 
+/// \brief Create and return a pass that writes CIL to the specified
+/// \c raw_ostream.
+ModulePass *createPrintCILPass(raw_ostream &OS,
+                                  const std::string &Banner = "",
+                                  bool ShouldPreserveUseListOrder = false);
+
 /// \brief Create and return a pass that prints functions to the specified
 /// \c raw_ostream as they are processed.
 FunctionPass *createPrintFunctionPass(raw_ostream &OS,
@@ -71,6 +77,25 @@ public:
   PreservedAnalyses run(Module &M, AnalysisManager<Module> &);
 
   static StringRef name() { return "PrintModulePass"; }
+};
+
+/// \brief Pass for printing Common Intermediate Language.
+///
+/// Note: This pass is for use with the new pass manager. Use the create...Pass
+/// functions above to create passes for use with the legacy pass manager.
+class PrintCILPass {
+  raw_ostream &OS;
+  std::string Banner;
+  bool ShouldPreserveUseListOrder;
+
+public:
+  PrintCILPass();
+  PrintCILPass(raw_ostream &OS, const std::string &Banner = "",
+                  bool ShouldPreserveUseListOrder = false);
+
+  PreservedAnalyses run(Module &M, AnalysisManager<Module> &);
+
+  static StringRef name() { return "PrintCILPass"; }
 };
 
 /// \brief Pass for printing a Function as LLVM's text IR assembly.

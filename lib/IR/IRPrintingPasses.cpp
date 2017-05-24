@@ -38,6 +38,24 @@ PreservedAnalyses PrintModulePass::run(Module &M, ModuleAnalysisManager &) {
   return PreservedAnalyses::all();
 }
 
+PrintCILPass::PrintCILPass() : OS(dbgs()) {}
+PrintCILPass::PrintCILPass(raw_ostream &OS, const std::string &Banner,
+                                 bool ShouldPreserveUseListOrder)
+    : OS(OS), Banner(Banner),
+      ShouldPreserveUseListOrder(ShouldPreserveUseListOrder) {}
+
+PreservedAnalyses PrintCILPass::run(Module &M, ModuleAnalysisManager &) {
+  OS << Banner;
+  if (llvm::isFunctionInPrintList("*"))
+    M.print(OS, nullptr, ShouldPreserveUseListOrder);
+  else {
+    for(const auto &F : M.functions())
+      if (llvm::isFunctionInPrintList(F.getName()))
+        F.print(OS);
+  }
+  return PreservedAnalyses::all();
+}
+
 PrintFunctionPass::PrintFunctionPass() : OS(dbgs()) {}
 PrintFunctionPass::PrintFunctionPass(raw_ostream &OS, const std::string &Banner)
     : OS(OS), Banner(Banner) {}
@@ -58,6 +76,27 @@ public:
   static char ID;
   PrintModulePassWrapper() : ModulePass(ID) {}
   PrintModulePassWrapper(raw_ostream &OS, const std::string &Banner,
+                         bool ShouldPreserveUseListOrder)
+      : ModulePass(ID), P(OS, Banner, ShouldPreserveUseListOrder) {}
+
+  bool runOnModule(Module &M) override {
+    ModuleAnalysisManager DummyMAM;
+    P.run(M, DummyMAM);
+    return false;
+  }
+
+  void getAnalysisUsage(AnalysisUsage &AU) const override {
+    AU.setPreservesAll();
+  }
+};
+
+class PrintCILPassWrapper : public ModulePass {
+  PrintCILPass P;
+
+public:
+  static char ID;
+  PrintCILPassWrapper() : ModulePass(ID) {}
+  PrintCILPassWrapper(raw_ostream &OS, const std::string &Banner,
                          bool ShouldPreserveUseListOrder)
       : ModulePass(ID), P(OS, Banner, ShouldPreserveUseListOrder) {}
 
@@ -129,6 +168,12 @@ ModulePass *llvm::createPrintModulePass(llvm::raw_ostream &OS,
                                         const std::string &Banner,
                                         bool ShouldPreserveUseListOrder) {
   return new PrintModulePassWrapper(OS, Banner, ShouldPreserveUseListOrder);
+}
+
+ModulePass *llvm::createPrintCILPass(llvm::raw_ostream &OS,
+                                        const std::string &Banner,
+                                        bool ShouldPreserveUseListOrder) {
+  return new PrintCILPassWrapper(OS, Banner, ShouldPreserveUseListOrder);
 }
 
 FunctionPass *llvm::createPrintFunctionPass(llvm::raw_ostream &OS,

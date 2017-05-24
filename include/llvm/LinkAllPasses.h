@@ -179,6 +179,7 @@ namespace {
       std::string buf;
       llvm::raw_string_ostream os(buf);
       (void) llvm::createPrintModulePass(os);
+      (void) llvm::createPrintCILPass(os);
       (void) llvm::createPrintFunctionPass(os);
       (void) llvm::createPrintBasicBlockPass(os);
       (void) llvm::createModuleDebugInfoPrinterPass();
