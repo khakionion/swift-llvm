@@ -157,6 +157,9 @@ public:
 char PrintModulePassWrapper::ID = 0;
 INITIALIZE_PASS(PrintModulePassWrapper, "print-module",
                 "Print module to stderr", false, false)
+char PrintCILPassWrapper::ID = 0;
+INITIALIZE_PASS(PrintCILPassWrapper, "print-cil",
+                "Print CIL to stderr", false, false)
 char PrintFunctionPassWrapper::ID = 0;
 INITIALIZE_PASS(PrintFunctionPassWrapper, "print-function",
                 "Print function to stderr", false, false)

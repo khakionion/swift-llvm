@@ -49,6 +49,7 @@ using namespace llvm;
 void llvm::initializeCore(PassRegistry &Registry) {
   initializeDominatorTreeWrapperPassPass(Registry);
   initializePrintModulePassWrapperPass(Registry);
+  initializePrintCILPassWrapperPass(Registry);
   initializePrintFunctionPassWrapperPass(Registry);
   initializePrintBasicBlockPassPass(Registry);
   initializeVerifierLegacyPassPass(Registry);
