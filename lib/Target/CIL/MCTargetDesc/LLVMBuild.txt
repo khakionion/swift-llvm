@@ -19,5 +19,5 @@
 type = Library
 name = CILDesc
 parent = CIL
-required_libraries = MC Support CILInfo
+required_libraries = MC Support CILInfo CILAsmPrinter
 add_to_library_groups = CIL

@@ -33,7 +33,8 @@ using namespace llvm;
 CILInstPrinter::CILInstPrinter(const MCAsmInfo &MAI,
                                        const MCInstrInfo &MII,
                                        const MCRegisterInfo &MRI)
-    : MCInstPrinter(MAI, MII, MRI) {}
+    : MCInstPrinter(MAI, MII, MRI) {
+    }
 
 void CILInstPrinter::printRegName(raw_ostream &OS, unsigned RegNo) const {
   // This is for .cfi directives.
