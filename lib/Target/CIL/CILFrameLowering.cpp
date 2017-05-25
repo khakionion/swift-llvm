@@ -3,7 +3,7 @@
 #include "CILTargetLowering.h"
 #include "CILSubtarget.h"
 // #include "CILInstrInfo.h"
-// #include "CILMachineFunctionInfo.h"
+#include "CILMachineFunctionInfo.h"
 #include "llvm/CodeGen/MachineFrameInfo.h"
 #include "llvm/CodeGen/MachineFunction.h"
 #include "llvm/CodeGen/MachineInstrBuilder.h"
@@ -29,9 +29,10 @@ using namespace llvm;
 
   void CILFrameLowering::emitPrologue(MachineFunction &MF,
                                       MachineBasicBlock &MBB) const {
+    CILMachineFunctionInfo* MFI = MF.getInfo<CILMachineFunctionInfo>();
   }
 
   void CILFrameLowering::emitEpilogue(MachineFunction &MF,
                                       MachineBasicBlock &MBB) const {
-  
+    CILMachineFunctionInfo* MFI = MF.getInfo<CILMachineFunctionInfo>();
   }
