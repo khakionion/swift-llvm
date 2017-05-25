@@ -7,8 +7,12 @@
 //
 //===----------------------------------------------------------------------===//
 //
-#include "CILTargetMachine.h"
 #include "CIL.h"
+#include "CILSubtarget.h"
+#include "CILTargetMachine.h"
+#include "CILTargetLowering.h"
+#include "CILTargetObjectFile.h"
+#include "CILTargetTransformInfo.h"
 #include "llvm/CodeGen/Passes.h"
 #include "llvm/CodeGen/TargetPassConfig.h"
 #include "llvm/IR/LegacyPassManager.h"
@@ -46,7 +50,9 @@ CILTargetMachine::CILTargetMachine(const Target &T, const Triple &TT,
                                        CodeModel::Model CM,
                                        CodeGenOpt::Level OL)
     : LLVMTargetMachine(T, computeDataLayout(TT, true), TT, CPU, FS, Options,
-                        getEffectiveRelocModel(RM), CM, OL) {
+                        getEffectiveRelocModel(RM), CM, OL), 
+                        TLOF(make_unique<CILTargetObjectFile>()), 
+                        Subtarget(TT, CPU, FS, *this) {
   initAsmInfo();
 }
 
@@ -57,7 +63,7 @@ namespace {
 class CILPassConfig : public TargetPassConfig {
 public:
   CILPassConfig(CILTargetMachine *TM, PassManagerBase &PM)
-    : TargetPassConfig(TM, PM) {}
+    : TargetPassConfig() {}
 
   CILTargetMachine &getCILTargetMachine() const {
     return getTM<CILTargetMachine>();
@@ -72,11 +78,10 @@ public:
 TargetPassConfig *CILTargetMachine::createPassConfig(PassManagerBase &PM) {
   return new CILPassConfig(this, PM);
 }
-
 void CILPassConfig::addIRPasses() {
-  addPass(createAtomicExpandPass(&getCILTargetMachine()));
+  //addPass(createAtomicExpandPass(&getCILTargetMachine()));
 
-  TargetPassConfig::addIRPasses();
+  // TargetPassConfig::addIRPasses();
 }
 
 bool CILPassConfig::addInstSelector() {
@@ -108,4 +113,10 @@ void CILPassConfig::addPreEmitPass(){
     addPass(new FixAllFDIVSQRT(getCILTargetMachine()));
   }
   */
+}
+
+TargetIRAnalysis CILTargetMachine::getTargetIRAnalysis() {
+  return TargetIRAnalysis([this](const Function &F) {
+    return TargetTransformInfo(CILTTIImpl(this, F));
+  });
 }

@@ -7,8 +7,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_LIB_TARGET_SPARC_SPARCTARGETOBJECTFILE_H
-#define LLVM_LIB_TARGET_SPARC_SPARCTARGETOBJECTFILE_H
+#ifndef LLVM_LIB_TARGET_CIL_CILTARGETOBJECTFILE_H
+#define LLVM_LIB_TARGET_CIL_CILTARGETOBJECTFILE_H
 
 #include "llvm/CodeGen/TargetLoweringObjectFileImpl.h"
 

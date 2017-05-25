@@ -17,7 +17,7 @@
 // #include "CILTargetStreamer.h"
 #include "llvm/MC/MCInstrInfo.h"
 #include "llvm/MC/MCRegisterInfo.h"
-// #include "llvm/MC/MCSubtargetInfo.h"
+#include "llvm/MC/MCSubtargetInfo.h"
 #include "llvm/Support/ErrorHandling.h"
 #include "llvm/Support/TargetRegistry.h"
 
@@ -29,6 +29,9 @@ using namespace llvm;
 
 #define GET_REGINFO_MC_DESC
 #include "CILGenRegisterInfo.inc"
+
+#define GET_SUBTARGETINFO_MC_DESC
+#include "CILGenSubtargetInfo.inc"
 
 static MCAsmInfo *createCILMCAsmInfo(const MCRegisterInfo &MRI,
                                        const Triple &TT) {

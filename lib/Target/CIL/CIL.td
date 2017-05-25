@@ -7,6 +7,8 @@ include "CILCallingConv.td"
 include "CILInstrInfo.td"
 def CILInstrInfo : InstrInfo;
 
+def : Processor<"generic", NoItineraries,      []>;
+
 include "CILAsmWriter.td"
 
 def CILAsmParser : AsmParser {

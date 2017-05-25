@@ -22,6 +22,7 @@
 namespace llvm {
   //class FunctionPass;
   class CILTargetMachine;
+  class CILSubtarget;
   //class formatted_raw_ostream;
   //class AsmPrinter;
   //class MCInst;

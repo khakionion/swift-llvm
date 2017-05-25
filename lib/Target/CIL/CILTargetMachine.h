@@ -14,12 +14,13 @@
 #ifndef LLVM_LIB_TARGET_CIL_CILTARGETMACHINE_H
 #define LLVM_LIB_TARGET_CIL_CILTARGETMACHINE_H
 
-//#include "CILInstrInfo.h"
+#include "llvm/IR/Function.h"
 #include "llvm/Target/TargetMachine.h"
 
 namespace llvm {
-
 class CILTargetMachine : public LLVMTargetMachine {
+  std::unique_ptr<TargetLoweringObjectFile> TLOF;
+  CILSubtarget        Subtarget;
 
 public:
   CILTargetMachine(const Target &T, const Triple &TT, StringRef CPU,
@@ -30,6 +31,19 @@ public:
 
   // Pass Pipeline Configuration
   TargetPassConfig *createPassConfig(PassManagerBase &PM) override;
+
+  TargetLoweringObjectFile *getObjFileLowering() const override {
+    return TLOF.get();
+  }
+
+  /// \brief Get the TargetIRAnalysis for this target.
+  TargetIRAnalysis getTargetIRAnalysis() override;
+
+  const CILSubtarget *getSubtargetImpl() const { return &Subtarget; }
+  const CILSubtarget *getSubtargetImpl(const Function &) const override {
+    return &Subtarget;
+  }
+
 };
 
 
