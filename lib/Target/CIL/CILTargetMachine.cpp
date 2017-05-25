@@ -79,9 +79,9 @@ TargetPassConfig *CILTargetMachine::createPassConfig(PassManagerBase &PM) {
   return new CILPassConfig(this, PM);
 }
 void CILPassConfig::addIRPasses() {
-  //addPass(createAtomicExpandPass(&getCILTargetMachine()));
+  addPass(createAtomicExpandPass(&getCILTargetMachine()));
 
-  // TargetPassConfig::addIRPasses();
+  TargetPassConfig::addIRPasses();
 }
 
 bool CILPassConfig::addInstSelector() {

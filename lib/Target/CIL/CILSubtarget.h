@@ -16,6 +16,7 @@
 
 #include "CILTargetLowering.h"
 #include "CILFrameLowering.h"
+#include "CILRegisterInfo.h"
 #include "llvm/IR/DataLayout.h"
 #include "llvm/Target/TargetMachine.h"
 #include "llvm/Target/TargetSubtargetInfo.h"
@@ -36,6 +37,9 @@ public:
   /// This constructor initializes the data members to match that
   /// of the specified triple.
   ///
+  const CILRegisterInfo RI;
+  const CILRegisterInfo *getRegisterInfo() const override { return &RI; }
+
   CILSubtarget(const Triple &TT, const std::string &CPU,
                  const std::string &FS, const TargetMachine &TM);
   const CILFrameLowering *getFrameLowering() const override {
