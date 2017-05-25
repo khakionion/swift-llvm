@@ -98,6 +98,11 @@ unsigned CILInstrInfo::insertBranch(MachineBasicBlock &MBB,
   return 1;
 }
 
+unsigned CILInstrInfo::removeBranch(MachineBasicBlock &MBB,
+                                        int *BytesRemoved) const {
+  return 0;
+}
+
 bool CILInstrInfo::reverseBranchCondition(
     SmallVectorImpl<MachineOperand> &Cond) const {
   return false;
