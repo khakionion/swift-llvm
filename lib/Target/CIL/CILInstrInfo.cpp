@@ -34,7 +34,7 @@ using namespace llvm;
 void CILInstrInfo::anchor() {}
 
 CILInstrInfo::CILInstrInfo(CILSubtarget &ST)
-    : CILGenInstrInfo(5,5,5,5), RI(),
+    : CILGenInstrInfo(), RI(),
       Subtarget(ST) {}
 
 /// isLoadFromStackSlot - If the specified machine instruction is a direct
