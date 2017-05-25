@@ -20,12 +20,13 @@
 #define GET_REGINFO_HEADER
 #include "CILGenRegisterInfo.inc"
 
+// Dummy to not crash RegisterClassInfo.
+static const llvm::MCPhysReg CalleeSavedReg = llvm::CIL::NoRegister;
+
+
 namespace llvm {
 struct CILRegisterInfo : public CILGenRegisterInfo {
   CILRegisterInfo();
-
-  // Dummy to not crash RegisterClassInfo.
-  static const MCPhysReg CalleeSavedReg = CIL::NoRegister;
 
   /// Code Generation virtual methods...
   const MCPhysReg *getCalleeSavedRegs(const MachineFunction *MF) const override

@@ -16,6 +16,7 @@ add_llvm_target(CILCodeGen
   CILSubtarget.cpp
   CILFrameLowering.cpp
   CILRegisterInfo.cpp
+  CILInstrInfo.cpp
   CILMachineFunctionInfo.cpp
 )
 
