@@ -15,6 +15,7 @@ add_llvm_target(CILCodeGen
   CILAsmPrinter.cpp
   CILSubtarget.cpp
   CILFrameLowering.cpp
+  CILRegisterInfo.cpp
 )
 
 #tablegen(LLVM CILGenAsmMatcher.inc -gen-asm-matcher)
