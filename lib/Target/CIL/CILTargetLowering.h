@@ -7,6 +7,10 @@ namespace llvm {
  class CILTargetLowering final : public TargetLowering {
   public:
     explicit CILTargetLowering(const TargetMachine &TM, const CILSubtarget &STI);
+    MachineBasicBlock *
+      EmitInstrWithCustomInserter(MachineInstr &MI,
+                                               MachineBasicBlock *BB) const override;
+
  };
 }
 

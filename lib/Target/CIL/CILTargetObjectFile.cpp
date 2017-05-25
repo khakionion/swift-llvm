@@ -14,9 +14,9 @@
 #include "llvm/Target/TargetLowering.h"
 
 using namespace llvm;
-
 CILTargetObjectFile::CILTargetObjectFile() {
 }
+/*
   void CILTargetObjectFile::emitPersonalityValue(MCStreamer &Streamer, const DataLayout &TM,
                             const MCSymbol *Sym) const  {
 }
@@ -28,13 +28,17 @@ CILTargetObjectFile::CILTargetObjectFile() {
                                    unsigned &Align) const {
                                   
 } 
+*/
   MCSection *CILTargetObjectFile::getExplicitSectionGlobal(const GlobalObject *GO, SectionKind Kind,
                                       const TargetMachine &TM) const {
+llvm_unreachable("Unhandled expression!");
 }
                                       
   MCSection *CILTargetObjectFile::SelectSectionForGlobal(const GlobalObject *GO, SectionKind Kind,
                                     const TargetMachine &TM) const {
+llvm_unreachable("Unhandled expression!");
 }
+/*
                                     
 MCSection *CILTargetObjectFile::getSectionForJumpTable(const Function &F,
                                     const TargetMachine &TM) const {
@@ -66,7 +70,6 @@ const MCExpr *CILTargetObjectFile::getTTypeGlobalReference(
     const GlobalValue *GV, unsigned Encoding, const TargetMachine &TM,
     MachineModuleInfo *MMI, MCStreamer &Streamer) const {
 
-  /*
   if (Encoding & dwarf::DW_EH_PE_pcrel) {
     MachineModuleInfoELF &ELFMMI = MMI->getObjFileInfo<MachineModuleInfoELF>();
 
@@ -87,5 +90,5 @@ const MCExpr *CILTargetObjectFile::getTTypeGlobalReference(
 
   return TargetLoweringObjectFileELF::getTTypeGlobalReference(GV, Encoding, TM,
                                                               MMI, Streamer);
-  */
 }
+*/

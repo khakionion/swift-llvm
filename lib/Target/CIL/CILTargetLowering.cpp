@@ -24,3 +24,9 @@ using namespace llvm;
 CILTargetLowering::CILTargetLowering(const TargetMachine &TM,
                                      const CILSubtarget &STI) : TargetLowering(TM) {
 }
+
+MachineBasicBlock *
+      CILTargetLowering::EmitInstrWithCustomInserter(MachineInstr &MI,
+                                               MachineBasicBlock *BB) const  {
+llvm_unreachable("Unexpected instr type to insert");
+}

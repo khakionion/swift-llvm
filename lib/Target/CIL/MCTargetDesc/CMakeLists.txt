@@ -5,4 +5,5 @@ add_llvm_library(LLVMCILDesc
   CILMCCodeEmitter.cpp
   CILMCTargetDesc.cpp
   CILMCExpr.cpp
+  CILTargetStreamer.cpp
   )

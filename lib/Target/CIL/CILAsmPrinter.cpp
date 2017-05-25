@@ -51,8 +51,19 @@ public:
   CILAsmPrinter(TargetMachine &TM, std::unique_ptr<MCStreamer> Streamer)
       : AsmPrinter(TM, std::move(Streamer)) {}
 
+  bool PrintAsmOperand(const MachineInstr *MI, unsigned OpNum,
+                       unsigned AsmVariant, const char *ExtraCode,
+                       raw_ostream &O) override;
+
   StringRef getPassName() const override { return "CIL Assembly Printer"; }
 };
+
+bool CILAsmPrinter::PrintAsmOperand(const MachineInstr *MI, unsigned OpNum,
+                       unsigned AsmVariant, const char *ExtraCode,
+                       raw_ostream &O) {
+  O << "\tHi";
+  return false;
+}
 
 } // end of anonymous namespace
 
