@@ -28,4 +28,4 @@ void CILSubtarget::anchor() { }
 
 CILSubtarget::CILSubtarget(const Triple &TT, const std::string &CPU,
                                const std::string &FS, const TargetMachine &TM)
-    : CILGenSubtargetInfo(TT, CPU, FS), FrameLowering(*this), TargetLowering(TM, *this) {}
+    : CILGenSubtargetInfo(TT, CPU, FS), FrameLowering(*this), TargetLowering(TM, *this), InstrInfo(*this) {}

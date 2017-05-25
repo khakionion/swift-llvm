@@ -17,6 +17,7 @@
 #include "CILTargetLowering.h"
 #include "CILFrameLowering.h"
 #include "CILRegisterInfo.h"
+#include "CILInstrInfo.h"
 #include "llvm/IR/DataLayout.h"
 #include "llvm/Target/TargetMachine.h"
 #include "llvm/Target/TargetSubtargetInfo.h"
@@ -31,6 +32,7 @@ class StringRef;
 class CILSubtarget : public CILGenSubtargetInfo {
   CILFrameLowering FrameLowering;  
   CILTargetLowering TargetLowering;
+  CILInstrInfo InstrInfo;
   virtual void anchor();
 
 public:
@@ -47,6 +49,9 @@ public:
   }
   const CILTargetLowering *getTargetLowering() const override {
     return &TargetLowering;
+  }
+  const CILInstrInfo *getInstrInfo() const override {
+    return &InstrInfo;
   }
 
 
