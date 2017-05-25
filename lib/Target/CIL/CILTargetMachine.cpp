@@ -63,7 +63,7 @@ namespace {
 class CILPassConfig : public TargetPassConfig {
 public:
   CILPassConfig(CILTargetMachine *TM, PassManagerBase &PM)
-    : TargetPassConfig() {}
+    : TargetPassConfig(TM, PM) {}
 
   CILTargetMachine &getCILTargetMachine() const {
     return getTM<CILTargetMachine>();
