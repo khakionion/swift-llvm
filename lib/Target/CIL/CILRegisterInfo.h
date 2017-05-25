@@ -24,10 +24,13 @@ namespace llvm {
 struct CILRegisterInfo : public CILGenRegisterInfo {
   CILRegisterInfo();
 
+  // Dummy to not crash RegisterClassInfo.
+  static const MCPhysReg CalleeSavedReg = CIL::NoRegister;
+
   /// Code Generation virtual methods...
   const MCPhysReg *getCalleeSavedRegs(const MachineFunction *MF) const override
   {
-    return nullptr;
+    return &CalleeSavedReg;
   }
   const uint32_t *getCallPreservedMask(const MachineFunction &MF,
                                        CallingConv::ID CC) const override
