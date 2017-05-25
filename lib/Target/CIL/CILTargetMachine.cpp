@@ -79,40 +79,16 @@ TargetPassConfig *CILTargetMachine::createPassConfig(PassManagerBase &PM) {
   return new CILPassConfig(this, PM);
 }
 void CILPassConfig::addIRPasses() {
-  addPass(createAtomicExpandPass(&getCILTargetMachine()));
-
   TargetPassConfig::addIRPasses();
 }
 
 bool CILPassConfig::addInstSelector() {
   //addPass(createCILISelDag(getCILTargetMachine()));
-  return false;
+  return false;//TargetPassConfig::addInstSelector();
 }
 
 void CILPassConfig::addPreEmitPass(){
-  /*
-  addPass(createCILDelaySlotFillerPass(getCILTargetMachine()));
-
-  if (this->getCILTargetMachine().getSubtargetImpl()->insertNOPLoad())
-  {
-    addPass(new InsertNOPLoad(getCILTargetMachine()));
-  }
-  if (this->getCILTargetMachine().getSubtargetImpl()->fixFSMULD())
-  {
-    addPass(new FixFSMULD(getCILTargetMachine()));
-  }
-  if (this->getCILTargetMachine().getSubtargetImpl()->replaceFMULS())
-  {
-    addPass(new ReplaceFMULS(getCILTargetMachine()));
-  }
-  if (this->getCILTargetMachine().getSubtargetImpl()->detectRoundChange()) {
-    addPass(new DetectRoundChange(getCILTargetMachine()));
-  }
-  if (this->getCILTargetMachine().getSubtargetImpl()->fixAllFDIVSQRT())
-  {
-    addPass(new FixAllFDIVSQRT(getCILTargetMachine()));
-  }
-  */
+  TargetPassConfig::addPreEmitPass();
 }
 
 TargetIRAnalysis CILTargetMachine::getTargetIRAnalysis() {
