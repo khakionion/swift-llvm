@@ -15,6 +15,7 @@
 #include "CIL.h"
 #include "CILMachineFunctionInfo.h"
 #include "CILSubtarget.h"
+#include "MCTargetDesc/CILMCTargetDesc.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/CodeGen/MachineFrameInfo.h"
@@ -61,7 +62,7 @@ static bool IsIntegerCC(unsigned CC)
   return true;
 }
 
-static CILCC::CondCodes GetOppositeBranchCondition(SPCC::CondCodes CC)
+static CILCC::CondCodes GetOppositeBranchCondition(CILCC::CondCodes CC)
 {
   llvm_unreachable("Invalid cond code");
 }

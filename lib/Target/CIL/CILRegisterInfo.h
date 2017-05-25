@@ -17,6 +17,8 @@
 #include "llvm/ADT/BitVector.h"
 #include "llvm/Target/TargetRegisterInfo.h"
 
+#include "MCTargetDesc/CILMCTargetDesc.h"
+
 #define GET_REGINFO_HEADER
 #include "CILGenRegisterInfo.inc"
 
